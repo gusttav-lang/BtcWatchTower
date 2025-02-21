@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Coin Guardian",
+  title: "Sats Guardian",
   description: "Protect your bitcoin with a watchtower",
 };
 

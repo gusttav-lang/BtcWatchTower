@@ -430,7 +430,7 @@ export default function BitcoinWatchTower() {
           <div className="grid sm:flex justify-between mb-8">
             <StepItem
               stepNumber={1}
-              title="Register addresses"
+              title="Addresses"
               isActive={isStepActive(1)}
               isCompleted={isStepCompleted(1)}
               onClick={() => handleStepClick(1)}

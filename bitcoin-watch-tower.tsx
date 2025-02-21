@@ -93,6 +93,9 @@ export default function BitcoinWatchTower() {
   const [signedTransaction, setSignedTransaction] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [telegram, setTelegram] = useState("");
 
   const isStepCompleted = (step: number) => completedSteps.includes(step);
   const isStepActive = (step: number) => currentStep === step;
@@ -228,7 +231,7 @@ export default function BitcoinWatchTower() {
             {fetchedUtXOs && (
               <div>
                 <div className="mt-6 mb-2 space-y-2">
-                  <div className="flex items-center justify-between py-3 px-4 bg-gray-100 rounded-lg">
+                  <div className="flex items-center justify-between py-3 px-4 bg-blue-50 rounded-lg">
                     <span className="text-gray-600 font-medium">
                       Number of UTXOs:
                     </span>
@@ -236,7 +239,7 @@ export default function BitcoinWatchTower() {
                       {utxos?.count}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between py-3 px-4 bg-gray-100 rounded-lg">
+                  <div className="flex items-center justify-between py-3 px-4 bg-blue-50 rounded-lg">
                     <span className="text-gray-600 font-medium">
                       Total Balance:
                     </span>
@@ -274,31 +277,31 @@ export default function BitcoinWatchTower() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="">Watch Address</span>
-                  <span className="font-mono  font-semibold px-3 py-1 rounded">
+                  <span className="font-semibold px-3 py-1 rounded">
                     {watchAddress}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="">Recovery Address</span>
-                  <span className="font-mono  font-semibold px-3 py-1 rounded">
+                  <span className="font-semibold px-3 py-1 rounded">
                     {recoveryAddress}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="">Total Balance</span>
-                  <span className="font-mono  font-semibold px-3 py-1 rounded">
+                  <span className="font-semibold px-3 py-1 rounded">
                     {utxos?.balance.toFixed(8)} BTC
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="">Transaction Count</span>
-                  <span className="font-mono  font-semibold px-3 py-1 rounded">
+                  <span className="font-semibold px-3 py-1 rounded">
                     {transactionCount}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="">Max Fee</span>
-                  <span className="font-mono  font-semibold px-3 py-1 rounded">
+                  <span className="font-semibold px-3 py-1 rounded">
                     {maxFee} satoshis
                   </span>
                 </div>
@@ -315,9 +318,12 @@ export default function BitcoinWatchTower() {
       case 3:
         return (
           <div>
-            <div className="mb-4 p-4 bg-gray-100 rounded">
-              <h3 className="font-semibold mb-2">Previous Step Summary:</h3>
-              <p>Lightning Invoice Generated and Paid</p>
+            <div className="mb-4 p-4 bg-blue-50 rounded">
+              <h3 className="font-semibold mb-2">Sign your transactions:</h3>
+              <p>
+                Choose how you are going to sign your transactions, we do not
+                hold your private key
+              </p>
             </div>
             <div className="flex space-x-2">
               <Button
@@ -346,19 +352,48 @@ export default function BitcoinWatchTower() {
       case 4:
         return (
           <div>
-            <div className="mb-4 p-4 bg-gray-100 rounded">
-              <h3 className="font-semibold mb-2">Previous Step Summary:</h3>
-              <p>
-                {isWalletConnected
-                  ? "Hardware Wallet Connected"
-                  : "Software Wallet Used"}
-              </p>
+            <div className="mb-4 p-4 rounded">
+              <h3 className="font-semibold mb-2">
+                Recieve notifications for robbery attempts:
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="email">Email (optional)</Label>
+                  <Input
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Phone (optional)</Label>
+                  <Input
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Enter your phone number"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="telegram">Telegram (optional)</Label>
+                  <Input
+                    id="telegram"
+                    value={telegram}
+                    onChange={(e) => setTelegram(e.target.value)}
+                    placeholder="Enter your Telegram username"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
             </div>
             <Button
               onClick={handleSubmit}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
-              Submit and Sign Transactions
+              Submit Transactions
             </Button>
           </div>
         );
@@ -413,7 +448,7 @@ export default function BitcoinWatchTower() {
           {renderStepContent()}
         </CardContent>
         {isSuccess && (
-          <CardContent className="mt-4 bg-green-100 border-t border-green-200">
+          <CardContent className="mt-4 bg-green-100 border-t border-green-200 place-items-center pt-6">
             <div className="flex items-center text-green-700">
               <CheckCircle className="mr-2" />
               <p>Success! Your watch tower service is now active.</p>
@@ -466,7 +501,7 @@ export default function BitcoinWatchTower() {
             className="mt-4 w-full bg-blue-500 hover:bg-blue-600"
             disabled={!signedTransaction}
           >
-            Submit Signed Transaction
+            Add Signed Transactions
           </Button>
         </DialogContent>
       </Dialog>

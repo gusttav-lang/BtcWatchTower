@@ -325,7 +325,7 @@ export default function BitcoinWatchTower() {
                 hold your private key
               </p>
             </div>
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row space-2 gap-2">
               <Button
                 onClick={handleConnectWallet}
                 className={`flex-1 ${
@@ -414,10 +414,10 @@ export default function BitcoinWatchTower() {
           </CardDescription>
         </CardHeader>
         <CardContent className="mt-6">
-          <div className="flex justify-between mb-8">
+          <div className="grid sm:flex justify-between mb-8">
             <StepItem
               stepNumber={1}
-              title="Fill Inputs"
+              title="Register addresses"
               isActive={isStepActive(1)}
               isCompleted={isStepCompleted(1)}
               onClick={() => handleStepClick(1)}

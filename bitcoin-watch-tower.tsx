@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Bitcoin,
   Wallet,
@@ -96,6 +96,7 @@ export default function BitcoinWatchTower() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [telegram, setTelegram] = useState("");
+  const [whitelistAddresses, setWhitelistAddresses] = useState("");
 
   const isStepCompleted = (step: number) => completedSteps.includes(step);
   const isStepActive = (step: number) => currentStep === step;
@@ -384,6 +385,18 @@ export default function BitcoinWatchTower() {
                     value={telegram}
                     onChange={(e) => setTelegram(e.target.value)}
                     placeholder="Enter your Telegram username"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="whitelistAddresses">
+                    Whitelist Addresses (optional)
+                  </Label>
+                  <Textarea
+                    id="whitelistAddresses"
+                    value={whitelistAddresses}
+                    onChange={(e) => setWhitelistAddresses(e.target.value)}
+                    placeholder="Enter whitelist addresses, one per line"
                     className="mt-1"
                   />
                 </div>

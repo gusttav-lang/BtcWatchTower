@@ -35,10 +35,13 @@ import { StepItem } from "./step-item";
 // Mock functions (same as before)
 const fetchUTXOs = async (address: string) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  return {
-    count: Math.floor(Math.random() * 10) + 1,
-    balance: Math.random() * 10,
-  };
+  return [
+    {
+      txid: "da326a5fdfa2251c7cdb6f8288f2173c8c528466a47bfc529dae5b08cc1d8896",
+      n: 0,
+      balance: Math.floor(Math.random() * 10 ** 9),
+    },
+  ];
 };
 
 const generateLightningInvoice = async () => {
@@ -79,9 +82,13 @@ export default function BitcoinWatchTower() {
   const [recoveryAddress, setRecoveryAddress] = useState("");
   const [transactionCount, setTransactionCount] = useState("");
   const [maxFee, setMaxFee] = useState("");
-  const [utxos, setUtxos] = useState<{ count: number; balance: number } | null>(
-    null
-  );
+  const [utxos, setUtxos] = useState<
+    {
+      txid: string;
+      n: number;
+      balance: number;
+    }[]
+  >([]);
   const [fetchedUtXOs, setFetchedUTXOs] = useState(false);
   const [invoice, setInvoice] = useState("");
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -168,6 +175,22 @@ export default function BitcoinWatchTower() {
     }
   };
 
+  const handleStepOne = async () => {
+    await fetch("/api/address", {
+      method: "POST",
+      body: JSON.stringify({
+        watchAddress: watchAddress,
+        utxos,
+        recoveryAddress: recoveryAddress,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setCompletedSteps((prev) => [...new Set([...prev, 1])]);
+    handleNextStep();
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -237,7 +260,7 @@ export default function BitcoinWatchTower() {
                       Number of UTXOs:
                     </span>
                     <span className="text-gray-900 font-semibold">
-                      {utxos?.count}
+                      {utxos.length}
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-3 px-4 bg-blue-50 rounded-lg">
@@ -245,15 +268,12 @@ export default function BitcoinWatchTower() {
                       Total Balance:
                     </span>
                     <span className="text-gray-900 font-semibold">
-                      {utxos?.balance.toFixed(8)} BTC
+                      {((utxos[0]?.balance ?? 0) / 10 ** 8).toFixed(8)} BTC
                     </span>
                   </div>
                 </div>
                 <Button
-                  onClick={() => {
-                    setCompletedSteps((prev) => [...new Set([...prev, 1])]);
-                    handleNextStep();
-                  }}
+                  onClick={handleStepOne}
                   disabled={
                     !watchAddress ||
                     !recoveryAddress ||
@@ -291,7 +311,7 @@ export default function BitcoinWatchTower() {
                 <div className="flex justify-between items-center">
                   <span className="">Total Balance</span>
                   <span className="font-semibold px-3 py-1 rounded">
-                    {utxos?.balance.toFixed(8)} BTC
+                    {((utxos[0]?.balance ?? 0) / 10 ** 8).toFixed(8)} BTC
                   </span>
                 </div>
                 <div className="flex justify-between items-center">

@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     console.log(dbData);
 
-    await sql`
+    const insertedRows = await sql`
       INSERT INTO armored_outpoint (hash, index, value, destination_address) VALUES ${sql(
         dbData.map(({ hash, index, value, destination_address }) => [
           hash,
@@ -52,11 +52,13 @@ export async function POST(req: NextRequest) {
           destination_address,
         ])
       )}
+      RETURNING id
     `;
 
-    return new Response(``, {
-      status: 201,
-    });
+    const insertedIds = insertedRows.map((row: any) => row.id);
+    console.log(insertedIds);
+
+    return Response.json({ insertedIds }, { status: 201 });
   } catch (error) {
     console.error("api/address -> ", error);
     return new Response("api/address", { status: 500 });

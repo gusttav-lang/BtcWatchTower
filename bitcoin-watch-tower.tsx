@@ -104,6 +104,7 @@ export default function BitcoinWatchTower() {
   const [phone, setPhone] = useState("");
   const [telegram, setTelegram] = useState("");
   const [whitelistAddresses, setWhitelistAddresses] = useState("");
+  const [insertedIds, setInsertedIds] = useState<string[]>([]);
 
   const isStepCompleted = (step: number) => completedSteps.includes(step);
   const isStepActive = (step: number) => currentStep === step;
@@ -176,7 +177,7 @@ export default function BitcoinWatchTower() {
   };
 
   const handleStepOne = async () => {
-    await fetch("/api/address", {
+    const res = await fetch("/api/address", {
       method: "POST",
       body: JSON.stringify({
         watchAddress: watchAddress,
@@ -187,6 +188,11 @@ export default function BitcoinWatchTower() {
         "Content-Type": "application/json",
       },
     });
+    if (res.status === 201) {
+      const data = await res.json();
+      setInsertedIds(data.insertedIds);
+      console.log(data.insertedIds);
+    }
     setCompletedSteps((prev) => [...new Set([...prev, 1])]);
     handleNextStep();
   };
@@ -440,7 +446,7 @@ export default function BitcoinWatchTower() {
       <Card className="w-full max-w-lg bg-white shadow-lg">
         <CardHeader className="bg-blue-600 text-white">
           <CardTitle className="text-2xl font-bold flex items-center">
-            <Bitcoin className="mr-2" /> Bitcoin Watch Tower
+            <Bitcoin className="mr-2" /> Sats Guardian
           </CardTitle>
           <CardDescription className="text-blue-100">
             Protect your Bitcoin with our watch tower service

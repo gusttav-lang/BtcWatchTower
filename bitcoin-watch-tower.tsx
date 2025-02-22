@@ -64,15 +64,9 @@ const fetchUnsignedTransactions = async () => {
   return [
     {
       id: 1,
-      from: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-      to: "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy",
+      transaction:
+        "0200000001210a17ede718c42aecfff5ddbc27ee4e644c24789550c94339f2e13e5111ba740100000000fdffffff02f401000000000000160014cbf7fa98e3cd992f49281b41281ed98c0a01a98b8f24000000000000160014c4d4dffe9c75b490b0f3952d0478a6c56caeb9d66d9b0300",
       amount: 0.1,
-    },
-    {
-      id: 2,
-      from: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-      to: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
-      amount: 0.05,
     },
   ];
 };
@@ -195,6 +189,26 @@ export default function BitcoinWatchTower() {
     }
     setCompletedSteps((prev) => [...new Set([...prev, 1])]);
     handleNextStep();
+  };
+
+  const assembleTransaction = () => {
+    const version = "02000000";
+    const flags = "0001";
+    const locktime = "00000000";
+    const txInCount = utxos.length.toString(16).padStart(2, "0"); // 01
+    const txIn = utxos
+      .map((utxo) => {
+        const txid = utxo.txid; // .match(/.{2}/g).reverse().join("");
+        const n = utxo.n.toString(16).padStart(2, "0");
+        const scriptSig = "00";
+        const sequence = "ffffffff";
+        return txid + n + scriptSig + sequence;
+      })
+      .join("");
+    const txOutCount = "01";
+    const totalBalance = utxos.reduce((sum, utxo) => sum + utxo.balance, 0);
+    const value = totalBalance.toString(16).padStart(16, "0");
+    // TODO: discount fee and continue
   };
 
   const renderStepContent = () => {
@@ -518,9 +532,9 @@ export default function BitcoinWatchTower() {
             <h4 className="font-medium mb-2">Unsigned Transactions:</h4>
             <ul className="space-y-2">
               {unsignedTransactions.map((tx) => (
-                <li key={tx.id} className="text-sm">
-                  From: {tx.from.slice(0, 10)}... To: {tx.to.slice(0, 10)}...
-                  Amount: {tx.amount} BTC
+                <li key={tx.id} className="text-sm break-all">
+                  {tx.transaction}
+                  {/* Amount: {tx.amount} BTC */}
                 </li>
               ))}
             </ul>

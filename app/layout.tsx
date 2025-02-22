@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Sats Guardian",
   description: "Protect your bitcoin with a watchtower",
+  icons: "./logo.jpg",
 };
 
 export default function RootLayout({
